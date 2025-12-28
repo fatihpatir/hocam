@@ -212,6 +212,7 @@ function saveTeacherProfile() {
     const school = document.getElementById('setup-school').value;
     // Use selected avatar from UI
     let avatar = document.querySelector('.avatar-option.selected').textContent;
+    const photoPreview = document.getElementById('photo-preview').src;
 
     const profileData = {
         id: 'teacher_profile',
