@@ -199,7 +199,7 @@ function setupProfileLogic() {
                 document.getElementById('setup-name').value = t.name;
                 document.getElementById('setup-branch').value = t.branch;
                 document.getElementById('setup-school').value = t.school;
-                document.getElementById('setup-gender').value = t.gender;
+                document.getElementById('setup-school').value = t.school;
                 showSetupMode();
             }
         };
@@ -210,20 +210,14 @@ function saveTeacherProfile() {
     const name = document.getElementById('setup-name').value;
     const branch = document.getElementById('setup-branch').value;
     const school = document.getElementById('setup-school').value;
-    const gender = document.getElementById('setup-gender').value;
-    const photoPreview = document.getElementById('photo-preview').src;
-
-    // Determine avatar
-    let avatar = '👨‍🏫';
-    if (gender === 'female') avatar = '👩‍🏫';
-    if (gender === 'none') avatar = '🧑‍🏫';
+    // Use selected avatar from UI
+    let avatar = document.querySelector('.avatar-option.selected').textContent;
 
     const profileData = {
         id: 'teacher_profile',
         name,
         branch,
         school,
-        gender,
         avatar,
         photo: (photoPreview && photoPreview.startsWith('data:')) ? photoPreview : null,
         updatedAt: new Date()
@@ -243,9 +237,8 @@ function loadTeacherProfile(t) {
     const firstName = t.name.split(' ')[0];
     document.getElementById('disp-slogan').textContent = `${firstName} Hocamın Dijital Asistanı`;
 
-    document.getElementById('disp-branch').textContent = t.branch;
-    document.getElementById('disp-school').textContent = t.school || 'Belirtilmedi';
-    document.getElementById('disp-gender').textContent = t.gender === 'male' ? 'Erkek' : (t.gender === 'female' ? 'Kadın' : 'Belirtilmedi');
+    document.getElementById('disp-branch-text').textContent = `Branş: ${t.branch}`;
+    document.getElementById('disp-school-text').textContent = `Okul: ${t.school || 'Belirtilmedi'}`;
 
     const avatarDisp = document.getElementById('profile-avatar-display');
     const imgDisp = document.getElementById('profile-img-display');
@@ -1125,18 +1118,34 @@ function viewPlan(id) {
 
         const viewerModal = document.getElementById('modal-file-viewer');
         const frame = document.getElementById('viewer-frame');
+        const imgBox = document.getElementById('viewer-image-box');
+        const img = document.getElementById('viewer-img');
         const title = document.getElementById('viewer-title');
         const btnOpenExternal = document.getElementById('btn-open-external');
 
         title.textContent = p.title;
-        frame.src = p.fileData;
 
-        // Handle External Links
+        // Reset Display
+        frame.style.display = 'none';
+        imgBox.style.display = 'none';
+        btnOpenExternal.style.display = 'none';
+
         if (p.fileType === 'url') {
+            // URL Mode
+            frame.src = p.fileData;
+            frame.style.display = 'block';
             btnOpenExternal.href = p.fileData;
             btnOpenExternal.style.display = 'flex';
+
+        } else if (p.fileType.startsWith('image/')) {
+            // Image Mode
+            img.src = p.fileData;
+            imgBox.style.display = 'flex';
+
         } else {
-            btnOpenExternal.style.display = 'none';
+            // PDF/Doc Mode
+            frame.src = p.fileData;
+            frame.style.display = 'block';
         }
 
         viewerModal.classList.add('active');
@@ -1161,7 +1170,7 @@ function setupSettingsLogic() {
                 document.getElementById('setup-name').value = t.name;
                 document.getElementById('setup-branch').value = t.branch;
                 document.getElementById('setup-school').value = t.school;
-                document.getElementById('setup-gender').value = t.gender;
+                document.getElementById('setup-school').value = t.school;
                 showSetupMode();
             }
         };

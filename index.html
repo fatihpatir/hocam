@@ -67,15 +67,7 @@
                         <input type="text" id="setup-school" placeholder="Örn: Nene Hatun MTAL">
                     </div>
 
-                    <div class="form-group">
-                        <label for="setup-gender">Cinsiyet</label>
-                        <select id="setup-gender">
-                            <option value="">Seçiniz (İsteğe bağlı)</option>
-                            <option value="male">Erkek</option>
-                            <option value="female">Kadın</option>
-                            <option value="none">Belirtmek istemiyorum</option>
-                        </select>
-                    </div>
+
 
                     <button type="submit" class="btn-primary">Devam Et</button>
                 </form>
@@ -85,7 +77,11 @@
         <!-- 1. Öğretmen Profili (Main View) -->
         <section id="view-profile" class="view">
             <div class="profile-card">
-                <div class="profile-header">
+                <div class="profile-header" style="position: relative;">
+                    <!-- App Logo Watermark -->
+                    <img src="icon.png"
+                        style="position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; opacity: 0.8; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+
                     <div class="profile-image-container">
                         <span id="profile-avatar-display" class="profile-avatar">👨‍🏫</span>
                         <img id="profile-img-display" src="" alt="Profil" style="display:none;">
@@ -94,18 +90,10 @@
                     <p id="disp-slogan"
                         style="font-size: 0.9rem; color: var(--primary-color); font-weight: 600; margin-top: 5px; opacity: 0.9;">
                         Hocamın Dijital Asistanı</p>
-                    <p id="disp-branch" style="font-size: 0.85rem; opacity: 0.7; margin-top: 2px;">Branş bilgisi</p>
+                    <p id="disp-branch-text" style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">Branş: ...</p>
+                    <p id="disp-school-text" style="font-size: 0.9rem; opacity: 0.8; margin-top: 2px;">Okul: ...</p>
                 </div>
-                <div class="profile-details">
-                    <div class="detail-item">
-                        <span class="label">Okul</span>
-                        <span class="value" id="disp-school">...</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Cinsiyet</span>
-                        <span class="value" id="disp-gender">...</span>
-                    </div>
-                </div>
+                <!-- Profile details removed as requested -->
 
                 <!-- Quick Actions Dashboard -->
                 <div class="info-card" style="text-align:center;">
@@ -292,9 +280,11 @@
                     <li style="margin-bottom: 8px;"><strong>iOS (iPhone/iPad):</strong> Safari'de "Paylaş" butonuna
                         basın, aşağı kaydırıp <strong>"Ana Ekrana Ekle"</strong> deyin.</li>
                     <li style="margin-bottom: 8px;"><strong>Android (Chrome):</strong> Sağ üstteki üç noktaya basın,
-                        <strong>"Ana Ekrana Ekle"</strong> veya "Uygulamayı Yükle" deyin.</li>
+                        <strong>"Ana Ekrana Ekle"</strong> veya "Uygulamayı Yükle" deyin.
+                    </li>
                     <li><strong>Bilgisayar (Chrome/Edge):</strong> Adres çubuğunun sağındaki (veya menüdeki)
-                        <strong>"Yükle"</strong> butonuna tıklayın.</li>
+                        <strong>"Yükle"</strong> butonuna tıklayın.
+                    </li>
                 </ul>
             </div>
             </div>
@@ -762,7 +752,11 @@
 
             <!-- Darker Background for Document Contrast -->
             <iframe id="viewer-frame"
-                style="flex: 1; border: none; width: 100%; height: 100%; background: #525659;"></iframe>
+                style="flex: 1; border: none; width: 100%; height: 100%; background: #525659; display:none;"></iframe>
+
+            <div id="viewer-image-box" class="viewer-image-container" style="display:none; flex:1;">
+                <img id="viewer-img" class="viewer-image" src="" alt="Plan Görüntüsü">
+            </div>
         </div>
     </div>
 
