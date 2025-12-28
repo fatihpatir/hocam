@@ -1170,7 +1170,7 @@ function setupSettingsLogic() {
     document.getElementById('btn-settings-theme').onclick = () => document.getElementById('modal-theme').classList.add('active');
     document.getElementById('btn-close-theme-modal').onclick = () => document.getElementById('modal-theme').classList.remove('active');
 
-    document.querySelectorAll('.theme-option').forEach(opt => {
+    document.querySelectorAll('.theme-option span').forEach(opt => {
         opt.onclick = () => {
             const theme = opt.getAttribute('data-theme');
             applyTheme(theme);
@@ -1281,7 +1281,16 @@ function restoreData(jsonStr) {
 
 function applyTheme(theme) {
     document.body.className = '';
-    document.body.classList.add(theme + '-theme');
+
+    // If undefined or invalid, default to 'theme-navy'
+    if (!theme || theme === 'undefined') {
+        theme = 'theme-navy';
+    }
+
+    // Handle both 'navy' and 'theme-navy' formats
+    const themeClass = theme.startsWith('theme-') ? theme : theme + '-theme';
+
+    document.body.classList.add(themeClass);
 }
 
 // --- PDF Logic ---
