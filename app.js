@@ -1171,7 +1171,6 @@ function setupSettingsLogic() {
                 document.getElementById('setup-name').value = t.name;
                 document.getElementById('setup-branch').value = t.branch;
                 document.getElementById('setup-school').value = t.school;
-                document.getElementById('setup-school').value = t.school;
                 showSetupMode();
             }
         };
@@ -1180,7 +1179,7 @@ function setupSettingsLogic() {
     document.getElementById('btn-settings-theme').onclick = () => document.getElementById('modal-theme').classList.add('active');
     document.getElementById('btn-close-theme-modal').onclick = () => document.getElementById('modal-theme').classList.remove('active');
 
-    document.querySelectorAll('.theme-option span').forEach(opt => {
+    document.querySelectorAll('.theme-option').forEach(opt => {
         opt.onclick = () => {
             const theme = opt.getAttribute('data-theme');
             applyTheme(theme);
