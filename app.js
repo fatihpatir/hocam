@@ -1282,13 +1282,16 @@ function restoreData(jsonStr) {
 function applyTheme(theme) {
     document.body.className = '';
 
-    // If undefined or invalid, default to 'theme-navy'
+    // If undefined or invalid, default to 'navy'
     if (!theme || theme === 'undefined') {
-        theme = 'theme-navy';
+        theme = 'navy';
     }
 
+    // 'default' means no extra class
+    if (theme === 'default') return;
+
     // Handle both 'navy' and 'theme-navy' formats
-    const themeClass = theme.startsWith('theme-') ? theme : theme + '-theme';
+    const themeClass = theme.startsWith('theme-') ? theme : 'theme-' + theme;
 
     document.body.classList.add(themeClass);
 }
