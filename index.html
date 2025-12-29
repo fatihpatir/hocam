@@ -318,8 +318,17 @@
                 <h2 id="class-detail-title">9-A Sınıfı</h2>
                 <button class="btn-icon" id="btn-export-class-pdf" title="Sınıf Listesi PDF">📄</button>
             </div>
-            <div class="filter-bar">
-                <input type="text" id="student-search" placeholder="Öğrenci ara..." class="search-input">
+            <div class="filter-bar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="student-search" placeholder="Öğrenci ara..." class="search-input"
+                    style="flex:1; margin-bottom:0;">
+
+                <!-- Excel Import Trigger -->
+                <label for="excel-upload" class="btn-icon-small"
+                    style="background: #27ae60; color: white; border:none; width:auto; padding:0 15px; font-size:0.9rem; gap:5px;"
+                    title="Excel'den Öğrenci Yükle">
+                    📥 <span style="font-size:0.8rem;">Excel'den Ekle</span>
+                    <input type="file" id="excel-upload" accept=".xlsx, .xls" hidden>
+                </label>
             </div>
             <div id="student-list" class="student-grid">
                 <!-- Students -->

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupProfileLogic();
         setupClassLogic();
         setupStudentLogic();
+        setupExcelImport();
         setupPerformanceLogic();
         setupAlumniLogic();
         setupTransitionLogic();
@@ -548,7 +549,119 @@ function performSaveStudent(studentData) {
             renderAllStudents();
         }
     };
+} // END performSaveStudent
+
+function setupExcelImport() {
+    const excelInput = document.getElementById('excel-upload');
+    if (!excelInput) return;
+
+    excelInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const data = new Uint8Array(ev.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                let importedCount = 0;
+                let existingCount = 0;
+
+                const tx = db.transaction(['students'], 'readwrite');
+                const store = tx.objectStore('students');
+                const classIndex = store.index('classId');
+
+                // Get existing students in this class to prevent duplicates
+                const request = classIndex.getAll(currentClassId);
+
+                request.onsuccess = () => {
+                    const existingStudents = request.result;
+                    // Create a Set of existing numbers for fast lookup
+                    const existingNumbers = new Set(existingStudents.map(s => String(s.number).trim()));
+
+                    // Advanced e-Okul Parser
+                    let headerRowIndex = 0;
+
+                    // Try to find header row index by scanning first 20 rows
+                    for (let r = 0; r < Math.min(jsonData.length, 20); r++) {
+                        const rowStr = JSON.stringify(jsonData[r]).toLowerCase();
+                        if (rowStr.includes('no') && rowStr.includes('adı')) {
+                            headerRowIndex = r;
+                            break;
+                        }
+                    }
+
+                    for (let i = headerRowIndex + 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (!row || row.length < 2) continue;
+
+                        let number = row[0];
+                        let name = row[1];
+
+                        // If row 0 is empty shift columns check
+                        if (!number && row[1] && row[2]) {
+                            number = row[1];
+                            name = row[2];
+                        }
+
+                        if (!number || !name) continue;
+
+                        number = String(number).trim();
+                        name = String(name).trim();
+
+                        // Concatenate surname if strictly separated
+                        if (row[2] && typeof row[2] === 'string' && isNaN(row[2])) {
+                            name = name + " " + row[2];
+                        }
+
+                        // DUPLICATE CHECK
+                        if (existingNumbers.has(number)) {
+                            existingCount++;
+                            continue;
+                        }
+
+                        store.put({
+                            classId: currentClassId,
+                            name: name,
+                            number: number,
+                            photo: null,
+                            notes: [],
+                            exams: [],
+                            status: 'active',
+                            updatedAt: new Date()
+                        });
+                        importedCount++;
+                    }
+                };
+
+                tx.oncomplete = () => {
+                    let msg = `${importedCount} yeni öğrenci başarıyla eklendi.`;
+                    if (existingCount > 0) {
+                        msg += `\n(${existingCount} öğrenci zaten listede olduğu için atlandı)`;
+                    }
+                    alert(msg);
+                    renderStudents(currentClassId);
+                    excelInput.value = '';
+                };
+
+                tx.onerror = (err) => {
+                    console.error(err);
+                    alert("Veritabanına kayıt sırasında hata oluştu.");
+                };
+
+            } catch (err) {
+                console.error(err);
+                alert("Excel dosyası işlenirken hata oluştu. Dosya formatını kontrol edin.");
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    };
 }
+
 
 function renderStudents(classId) {
     const list = document.getElementById('student-list');
